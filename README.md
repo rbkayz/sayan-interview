@@ -8,22 +8,22 @@ The objective is to listen to an on-chain transaction event, and create a HTML u
 
 ---
 
-### 1 - Listen to on-chain events for any transactions done by a wallet address that
+### 1 - Listen to on-chain events for any transactions done by a wallet address
 
-You can use any third party node service for this
-Build this on the Rinkeby Testnet of Ethereum
-I will provide the wallet address to you as an input variable
+* You can use any third party node service for this
+* Build this on the Rinkeby Testnet of Ethereum
+* I will provide the wallet address to you as an input variable
 
 ### 2 - Prepare two HTML templates (like emails) to inform a user about sent / received transactions
 
-One HTML is to inform a user of a received transaction
-One HTML is to inform the user of a sent transaction
-Make sure that all relevant information is included in the template (like gas fees, txn amount, block number, txn hash, etc.)
-And make it look nice please!
+* One HTML is to inform a user of a received transaction
+* One HTML is to inform the user of a sent transaction
+* Make sure that all relevant information is included in the template (like gas fees, txn amount, block number, txn hash, etc.)
+* And make it look nice please!
 
 ### 3 - Parse data from the transaction into the template
 
-You may use any templating service for this (like Handlebars)
+You may use any templating engine for this (like Handlebars js)
 
 ---
 
