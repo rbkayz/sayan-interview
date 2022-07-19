@@ -1,0 +1,179 @@
+<html>
+    <head>
+        <title>Watcher</title>
+    </head>
+    <style>
+        #sent {
+            width: 100%;
+        }
+        body {
+            background-color: rgb(236, 255, 255);
+        }
+        .cntr {
+            width: 60%;
+            height: fit-content;
+            margin: auto;
+            border-radius: 15px;
+            filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+            background-color: white;
+        }
+        .form {
+            width: 100%;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .label {
+            font-size: 18px;
+            font-weight: 600;
+            margin-right: 20px;
+        }
+        #address {
+            border-radius: 8px;
+            border: 1px solid gray;
+            height: 50px;
+            width: 200px;
+            margin-right: 20px;
+            font-size: 16px;
+        }
+
+        #address::placeholder {
+            padding-left: 10px;
+            font-size: 16px;
+        }
+        .btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgb(8, 8, 192);
+            color: white;
+            border: 0px;
+            font-size: 16px;
+            width: 80px;
+            height: 50px;
+            border-radius: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        #watching {
+            width: 80%;
+            margin: auto;
+            font-size: 17px;
+            font-weight: 300;
+            height: 100px;
+        }
+        .heading {
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .txn {
+            width: 100%;
+            height: fit-content;
+            display: flex;
+            justify-content: space-between;
+        }
+        .txnCntr {
+            width: 50%;
+            height: 100%;
+            /* overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; */
+        }
+        .rCntr {
+            width: 100%;
+            height: fit-content;
+        }
+        .listItem {
+            width: 95%;
+            background-color: rgb(219, 255, 255);
+            border-radius: 15px;
+            margin: auto;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 10px;
+        }
+        .item {
+            width: 100%;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            height: 20px;
+        }
+
+    </style>
+    <body>
+        <div class="cntr">
+            <form onsubmit="return false" class="form">
+                <label for="address" class="label">Address: </label>
+                <input type="text" placeholder="Enter Address" id="address" >
+                <button onclick = "watch()" class="btn">Submit</button>
+            </form>
+            <div id="watching">Watching: None</div>
+            <div class="txn">
+                <div class="txnCntr">
+                    <div class="heading">Sent</div>
+                    <div id="sent" class="rCntr">
+                    </div>
+                </div>
+                <div class="txnCntr">
+                    <div class="heading">Recieved</div>
+                    <div id="recieved" class="rCntr">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js"
+        type="application/javascript"></script>
+    <script>
+        const provider = new ethers.providers.EtherscanProvider("rinkeby","BPJJWH939NG4MIMVGK49C21HB23EAXB85B");
+        let intervalId;
+        async function watch() {
+            clearInterval(intervalId);
+            let address = document.getElementById('address').value;
+            console.log("address", address);
+            if (!ethers.utils.isAddress(address)) {
+                alert("Invalid Address");
+                return;
+            }
+            document.getElementById('watching').innerHTML = "Watching : " + address;
+            document.getElementById('address').value = "";
+            intervalId = setInterval(async () => {
+                let Tx = await provider.getHistory(address, 0);
+                let sent = [];
+                let recieved = [];
+                Tx.forEach(el => {
+                    if(el.from == address) {
+                        sent.push(el);
+                    } else {
+                        recieved.push(el);
+                    }
+                });
+                changeDocument('sent', sent);
+                changeDocument('recieved', recieved);
+            }, 5000);
+        }
+        const changeDocument = (val, list) => {
+            list.reverse();
+            document.getElementById(val).innerHTML = "";
+            list.forEach((item, idx) => {
+                let html = "";
+                for( const key in item ){
+                    if(item[key]) {
+                        html += `<div class=\"item\">${key} : ${item[key]}</div>`
+                    }
+                }
+                document.getElementById(val).innerHTML += "<div class=\"listItem\">"+html+"</div>";
+            });
+        }
+    </script>
+</html>
